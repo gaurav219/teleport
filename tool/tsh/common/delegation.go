@@ -29,7 +29,6 @@ import (
 	"github.com/gravitational/teleport/api/mfa"
 	"github.com/gravitational/teleport/api/types"
 	"github.com/gravitational/teleport/lib/auth/authclient"
-	"github.com/gravitational/teleport/lib/client"
 )
 
 func onDelegationCreateSession(cf *CLIConf) error {
@@ -47,7 +46,7 @@ func onDelegationCreateSession(cf *CLIConf) error {
 	}
 
 	var session *delegationv1pb.DelegationSession
-	err = client.RetryWithRelogin(cf.Context, tc, func() error {
+	err = retryWithRelogin(cf.Context, tc, func() error {
 		return tc.WithRootClusterClient(cf.Context, func(clt authclient.ClientI) error {
 			ctx := cf.Context
 

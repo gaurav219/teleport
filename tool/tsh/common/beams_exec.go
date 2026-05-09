@@ -23,7 +23,6 @@ import (
 	"github.com/gravitational/trace"
 
 	beamsv1 "github.com/gravitational/teleport/api/gen/proto/go/teleport/beams/v1"
-	"github.com/gravitational/teleport/lib/client"
 )
 
 type beamsExecCommand struct {
@@ -51,7 +50,7 @@ func (c *beamsExecCommand) run(cf *CLIConf) error {
 	tc.AllowHeadless = true
 
 	var beam *beamsv1.Beam
-	err = client.RetryWithRelogin(ctx, tc, func() error {
+	err = retryWithRelogin(ctx, tc, func() error {
 		clusterClient, err := tc.ConnectToCluster(ctx)
 		if err != nil {
 			return trace.Wrap(err)

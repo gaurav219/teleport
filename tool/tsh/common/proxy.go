@@ -95,7 +95,7 @@ func onProxyCommandSSH(cf *CLIConf, initFunc ClientInitFunc) error {
 		return trace.Wrap(sshFunc())
 	}
 
-	return trace.Wrap(libclient.RetryWithRelogin(cf.Context, tc, sshFunc))
+	return trace.Wrap(retryWithRelogin(cf.Context, tc, sshFunc))
 }
 
 // cleanTargetHost cleans the targetHost and remote site and proxy suffixes.
@@ -491,7 +491,7 @@ func onProxyCommandApp(cf *CLIConf) error {
 		appInfo *appInfo
 		app     types.Application
 	)
-	if err := libclient.RetryWithRelogin(cf.Context, tc, func() error {
+	if err := retryWithRelogin(cf.Context, tc, func() error {
 		var err error
 		clusterClient, err := tc.ConnectToCluster(cf.Context)
 		if err != nil {

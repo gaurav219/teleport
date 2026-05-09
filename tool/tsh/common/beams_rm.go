@@ -25,7 +25,6 @@ import (
 	"github.com/gravitational/trace"
 
 	beamsv1 "github.com/gravitational/teleport/api/gen/proto/go/teleport/beams/v1"
-	"github.com/gravitational/teleport/lib/client"
 )
 
 type beamsRMCommand struct {
@@ -50,7 +49,7 @@ func (c *beamsRMCommand) run(cf *CLIConf) error {
 	}
 
 	var beam *beamsv1.Beam
-	err = client.RetryWithRelogin(ctx, tc, func() error {
+	err = retryWithRelogin(ctx, tc, func() error {
 		clusterClient, err := tc.ConnectToCluster(ctx)
 		if err != nil {
 			return trace.Wrap(err)

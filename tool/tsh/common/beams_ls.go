@@ -88,7 +88,7 @@ func (c *beamsLSCommand) run(cf *CLIConf) error {
 
 func (c *beamsLSCommand) fetch(ctx context.Context, tc *client.TeleportClient, all bool) ([]*beamsv1.Beam, error) {
 	var beams []*beamsv1.Beam
-	err := client.RetryWithRelogin(ctx, tc, func() error {
+	err := retryWithRelogin(ctx, tc, func() error {
 		clusterClient, err := tc.ConnectToCluster(ctx)
 		if err != nil {
 			return trace.Wrap(err)

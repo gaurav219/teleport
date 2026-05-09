@@ -78,7 +78,7 @@ func onListDatabases(cf *CLIConf) error {
 	tc.AllowHeadless = true
 
 	var clusterClient *client.ClusterClient
-	err = client.RetryWithRelogin(cf.Context, tc, func() error {
+	err = retryWithRelogin(cf.Context, tc, func() error {
 		clusterClient, err = tc.ConnectToCluster(cf.Context)
 		return trace.Wrap(err)
 	})
@@ -320,7 +320,7 @@ func databaseLogin(cf *CLIConf, tc *client.TeleportClient, dbInfo *databaseInfo)
 	if profile.IsVirtual {
 		logger.InfoContext(cf.Context, "Note: already logged in due to an identity file (`-i ...`); will only update database config files")
 	} else {
-		if err = client.RetryWithRelogin(cf.Context, tc, func() error {
+		if err = retryWithRelogin(cf.Context, tc, func() error {
 			keyRing, err = tc.IssueUserCertsWithMFA(cf.Context, client.ReissueParams{
 				RouteToCluster:  tc.SiteName,
 				RouteToDatabase: client.RouteToDatabaseToProto(dbInfo.RouteToDatabase),
@@ -1017,7 +1017,7 @@ func (d *databaseInfo) getChecker(ctx context.Context, tc *client.TeleportClient
 	}
 	var clusterClient *client.ClusterClient
 	var err error
-	err = client.RetryWithRelogin(ctx, tc, func() error {
+	err = retryWithRelogin(ctx, tc, func() error {
 		clusterClient, err = tc.ConnectToCluster(ctx)
 		return trace.Wrap(err)
 	})
@@ -1147,7 +1147,7 @@ func getDatabase(ctx context.Context, tc *client.TeleportClient, name string) (t
 func getDatabaseServers(ctx context.Context, tc *client.TeleportClient, name string) ([]types.DatabaseServer, error) {
 	var databases []types.DatabaseServer
 
-	err := client.RetryWithRelogin(ctx, tc, func() error {
+	err := retryWithRelogin(ctx, tc, func() error {
 		matchName := makeNamePredicate(name)
 
 		var err error
@@ -1212,7 +1212,7 @@ func filterActiveDatabases(routes []tlsca.RouteToDatabase, databases types.Datab
 // has a predicate expression, the predicates are combined with a logical AND.
 func listDatabasesWithPredicate(ctx context.Context, tc *client.TeleportClient, predicate string) (types.Databases, error) {
 	var databases []types.Database
-	err := client.RetryWithRelogin(ctx, tc, func() error {
+	err := retryWithRelogin(ctx, tc, func() error {
 		var err error
 		predicate := makePredicateConjunction(predicate, tc.PredicateExpression)
 		logger.DebugContext(ctx, "Listing databases with predicate and labels", "predicate", predicate, "labels", tc.Labels)

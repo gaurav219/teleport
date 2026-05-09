@@ -164,7 +164,7 @@ func (c *kubeJoinCommand) run(cf *CLIConf) error {
 		if crt != nil && time.Until(crt.NotAfter) > time.Minute {
 			logger.DebugContext(cf.Context, "Re-using existing TLS cert for Kubernetes cluster", "cluster", kubeCluster)
 		} else {
-			err = client.RetryWithRelogin(cf.Context, tc, func() error {
+			err = retryWithRelogin(cf.Context, tc, func() error {
 				var err error
 				k, err = tc.IssueUserCertsWithMFA(cf.Context, client.ReissueParams{
 					RouteToCluster:    cluster,
@@ -766,7 +766,7 @@ func (c *kubeCredentialsCommand) issueCert(cf *CLIConf) error {
 	}()
 
 	ctx, span := tc.Tracer.Start(cf.Context, "tsh.kubeCredentials/RetryWithRelogin")
-	err = client.RetryWithRelogin(
+	err = retryWithRelogin(
 		ctx,
 		tc,
 		func() error {
@@ -1297,7 +1297,7 @@ func (c *kubeLoginCommand) run(cf *CLIConf) error {
 
 	var kubeStatus *kubernetesStatus
 	err = retryWithAccessRequest(cf, tc, func() error {
-		err := client.RetryWithRelogin(cf.Context, tc, func() error {
+		err := retryWithRelogin(cf.Context, tc, func() error {
 			var err error
 			const ignoreRelayFalse = false
 			kubeStatus, err = fetchKubeStatus(cf.Context, tc, ignoreRelayFalse)
@@ -1480,7 +1480,7 @@ Learn more at https://goteleport.com/docs/architecture/tls-routing/#working-with
 }
 
 func fetchKubeClusters(ctx context.Context, tc *client.TeleportClient) (teleportCluster string, kubeClusters []types.KubeCluster, err error) {
-	err = client.RetryWithRelogin(ctx, tc, func() error {
+	err = retryWithRelogin(ctx, tc, func() error {
 		clusterClient, err := tc.ConnectToCluster(ctx)
 		if err != nil {
 			return trace.Wrap(err)

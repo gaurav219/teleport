@@ -32,7 +32,6 @@ import (
 	"github.com/gravitational/teleport/api/types"
 	"github.com/gravitational/teleport/lib/asciitable"
 	"github.com/gravitational/teleport/lib/aws/awsconfigfile"
-	"github.com/gravitational/teleport/lib/client"
 )
 
 // onAWSProfile generates AWS configuration for AWS Identity Center integration.
@@ -44,7 +43,7 @@ func onAWSProfile(cf *CLIConf) error {
 	}
 
 	var resources types.EnrichedResources
-	err = client.RetryWithRelogin(cf.Context, tc, func() error {
+	err = retryWithRelogin(cf.Context, tc, func() error {
 		clt, err := tc.ConnectToCluster(cf.Context)
 		if err != nil {
 			return trace.Wrap(err)

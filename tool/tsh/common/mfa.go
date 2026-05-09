@@ -112,7 +112,7 @@ func (c *mfaLSCommand) run(cf *CLIConf) error {
 	}
 
 	var devs []*types.MFADevice
-	if err := client.RetryWithRelogin(cf.Context, tc, func() error {
+	if err := retryWithRelogin(cf.Context, tc, func() error {
 		clusterClient, err := tc.ConnectToCluster(cf.Context)
 		if err != nil {
 			return trace.Wrap(err)
@@ -314,7 +314,7 @@ func (c *mfaAddCommand) addDeviceRPC(ctx context.Context, tc *client.TeleportCli
 	}
 
 	var dev *types.MFADevice
-	if err := client.RetryWithRelogin(ctx, tc, func() error {
+	if err := retryWithRelogin(ctx, tc, func() error {
 		clusterClient, err := tc.ConnectToCluster(ctx)
 		if err != nil {
 			return trace.Wrap(err)
@@ -572,7 +572,7 @@ func (c *mfaRemoveCommand) run(cf *CLIConf) error {
 	}
 
 	ctx := cf.Context
-	if err := client.RetryWithRelogin(ctx, tc, func() error {
+	if err := retryWithRelogin(ctx, tc, func() error {
 		clusterClient, err := tc.ConnectToCluster(ctx)
 		if err != nil {
 			return trace.Wrap(err)

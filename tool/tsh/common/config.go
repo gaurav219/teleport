@@ -27,6 +27,7 @@ import (
 	"github.com/gravitational/teleport/api/utils/keypaths"
 	"github.com/gravitational/teleport/lib/client"
 	"github.com/gravitational/teleport/lib/config/openssh"
+	"github.com/gravitational/teleport/lib/utils"
 )
 
 // writeSSHConfig generates an OpenSSH config block from the `sshConfigTemplate`
@@ -58,8 +59,17 @@ func onConfig(cf *CLIConf) error {
 	// destination (possibly their ssh config file) may get polluted with
 	// invalid output. Instead, rely on the normal error messages (which are
 	// sent to stderr) and expect the user to log in manually.
-	clusterClient, err := tc.ConnectToCluster(cf.Context)
+
+	var clusterClient *client.ClusterClient
+	err = retryWithRelogin(cf.Context, tc, func() error {
+		var errConn error
+		clusterClient, errConn = tc.ConnectToCluster(cf.Context)
+		return errConn
+	})
 	if err != nil {
+		if utils.IsCertExpiredError(err) {
+			return trace.Errorf("authentication failed: your certificate has expired. Please run 'tsh login' to refresh your credentials")
+		}
 		return trace.Wrap(err)
 	}
 	defer clusterClient.Close()

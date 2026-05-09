@@ -29,7 +29,6 @@ import (
 
 	"github.com/gravitational/teleport"
 	devicepb "github.com/gravitational/teleport/api/gen/proto/go/teleport/devicetrust/v1"
-	"github.com/gravitational/teleport/lib/client"
 	"github.com/gravitational/teleport/lib/devicetrust"
 	"github.com/gravitational/teleport/lib/devicetrust/enroll"
 	dtnative "github.com/gravitational/teleport/lib/devicetrust/native"
@@ -116,7 +115,7 @@ func (c *deviceEnrollCommand) run(cf *CLIConf) error {
 	}
 
 	ctx := cf.Context
-	return trace.Wrap(client.RetryWithRelogin(ctx, teleportClient, func() error {
+	return trace.Wrap(retryWithRelogin(ctx, teleportClient, func() error {
 		clusterClient, err := teleportClient.ConnectToCluster(ctx)
 		if err != nil {
 			return trace.Wrap(err)

@@ -28,7 +28,6 @@ import (
 
 	"github.com/gravitational/teleport/api/types"
 	"github.com/gravitational/teleport/api/utils/prompt"
-	"github.com/gravitational/teleport/lib/client"
 	"github.com/gravitational/teleport/lib/utils"
 )
 
@@ -90,7 +89,7 @@ func (c *gitSSHCommand) run(cf *CLIConf) (err error) {
 		return trace.Wrap(err)
 	}
 	tc.Stdin = os.Stdin
-	err = client.RetryWithRelogin(cf.Context, tc, func() error {
+	err = retryWithRelogin(cf.Context, tc, func() error {
 		return tc.SSH(cf.Context, cf.RemoteCommand)
 	})
 	return trace.Wrap(convertSSHExitCode(tc, err))

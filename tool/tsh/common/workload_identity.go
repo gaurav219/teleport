@@ -120,7 +120,7 @@ func (c *issueX509Command) run(cf *CLIConf) error {
 		return trace.BadParameter("name-selector or label-selector must be specified")
 	}
 
-	return client.RetryWithRelogin(ctx, tc, func() error {
+	return retryWithRelogin(ctx, tc, func() error {
 		clusterClient, err := tc.ConnectToCluster(ctx)
 		if err != nil {
 			return trace.Wrap(err)

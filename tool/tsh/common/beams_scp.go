@@ -110,7 +110,7 @@ func (c *beamsSCPCommand) run(cf *CLIConf) error {
 }
 
 func (c *beamsSCPCommand) withCluster(ctx context.Context, tc *client.TeleportClient, fn func(authclient.ClientI) error) error {
-	return trace.Wrap(client.RetryWithRelogin(ctx, tc, func() error {
+	return trace.Wrap(retryWithRelogin(ctx, tc, func() error {
 		clusterClient, err := tc.ConnectToCluster(ctx)
 		if err != nil {
 			return trace.Wrap(err)

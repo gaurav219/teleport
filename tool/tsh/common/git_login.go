@@ -123,7 +123,7 @@ func doGitHubOAuthFlow(cf *CLIConf, org string) error {
 		return trace.Wrap(err)
 	}
 
-	err = client.RetryWithRelogin(
+	err = retryWithRelogin(
 		cf.Context,
 		tc,
 		func() error {

@@ -111,7 +111,7 @@ func (c *mcpListCommand) fetch() error {
 	}
 
 	var clusterClient *client.ClusterClient
-	err = client.RetryWithRelogin(ctx, tc, func() error {
+	err = retryWithRelogin(ctx, tc, func() error {
 		clusterClient, err = tc.ConnectToCluster(ctx)
 		return trace.Wrap(err)
 	})
@@ -158,7 +158,7 @@ func fetchMCPServers(ctx context.Context, tc *client.TeleportClient, auth apicli
 	if auth == nil {
 		var clusterClient *client.ClusterClient
 		var err error
-		err = client.RetryWithRelogin(ctx, tc, func() error {
+		err = retryWithRelogin(ctx, tc, func() error {
 			clusterClient, err = tc.ConnectToCluster(ctx)
 			return trace.Wrap(err)
 		})

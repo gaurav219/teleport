@@ -91,7 +91,7 @@ func (c *gitListCommand) init(cf *CLIConf) {
 
 func (c *gitListCommand) doFetch(cf *CLIConf, tc *client.TeleportClient) ([]types.Server, error) {
 	var resources types.EnrichedResources
-	err := client.RetryWithRelogin(cf.Context, tc, func() error {
+	err := retryWithRelogin(cf.Context, tc, func() error {
 		client, err := tc.ConnectToCluster(cf.Context)
 		if err != nil {
 			return trace.Wrap(err)

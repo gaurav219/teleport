@@ -85,7 +85,7 @@ func (c *beamsUnpublishCommand) run(cf *CLIConf) error {
 
 func (c *beamsUnpublishCommand) getBeam(ctx context.Context, tc *client.TeleportClient, name string) (*beamsv1.Beam, error) {
 	var beam *beamsv1.Beam
-	err := client.RetryWithRelogin(ctx, tc, func() error {
+	err := retryWithRelogin(ctx, tc, func() error {
 		clusterClient, err := tc.ConnectToCluster(ctx)
 		if err != nil {
 			return trace.Wrap(err)
@@ -109,7 +109,7 @@ func (c *beamsUnpublishCommand) getBeam(ctx context.Context, tc *client.Teleport
 
 func (c *beamsUnpublishCommand) updateBeam(ctx context.Context, tc *client.TeleportClient, beam *beamsv1.Beam) (*beamsv1.Beam, error) {
 	var updatedBeam *beamsv1.Beam
-	err := client.RetryWithRelogin(ctx, tc, func() error {
+	err := retryWithRelogin(ctx, tc, func() error {
 		clusterClient, err := tc.ConnectToCluster(ctx)
 		if err != nil {
 			return trace.Wrap(err)

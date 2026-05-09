@@ -375,7 +375,7 @@ func pickGCPApp(cf *CLIConf) (*gcpApp, error) {
 	}
 
 	var appInfo *appInfo
-	if err := client.RetryWithRelogin(cf.Context, tc, func() error {
+	if err := retryWithRelogin(cf.Context, tc, func() error {
 		var err error
 		profile, err := tc.ProfileStatus()
 		if err != nil {

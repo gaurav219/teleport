@@ -402,7 +402,7 @@ type sharedDatabaseExecClient struct {
 func newSharedDatabaseExecClient(cf *CLIConf, tc *client.TeleportClient) (*sharedDatabaseExecClient, error) {
 	var clusterClient *client.ClusterClient
 	var err error
-	if err := client.RetryWithRelogin(cf.Context, tc, func() error {
+	if err := retryWithRelogin(cf.Context, tc, func() error {
 		clusterClient, err = tc.ConnectToCluster(cf.Context)
 		return trace.Wrap(err)
 	}); err != nil {

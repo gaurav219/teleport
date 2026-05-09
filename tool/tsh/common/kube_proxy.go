@@ -519,7 +519,7 @@ func loadKubeUserCerts(ctx context.Context, tc *client.TeleportClient, clusters 
 
 	// Renew tsh session and reuse the proxy client.
 	var clusterClient *client.ClusterClient
-	err := client.RetryWithRelogin(ctx, tc, func() error {
+	err := retryWithRelogin(ctx, tc, func() error {
 		var err error
 		clusterClient, err = tc.ConnectToCluster(ctx)
 		return trace.Wrap(err)
@@ -602,7 +602,7 @@ func (k *kubeLocalProxy) getCertReissuer(tc *client.TeleportClient) func(ctx con
 		currentContext = cfg.CurrentContext
 
 		// Connect to Proxy, with relogin if required.
-		err = client.RetryWithRelogin(ctx, tc, func() error {
+		err = retryWithRelogin(ctx, tc, func() error {
 			ctx, cancel := context.WithTimeout(ctx, apidefaults.DefaultIOTimeout)
 			defer cancel()
 

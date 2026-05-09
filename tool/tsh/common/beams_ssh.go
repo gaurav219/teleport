@@ -53,7 +53,7 @@ func (c *beamsSSHCommand) run(cf *CLIConf) error {
 	tc.AllowHeadless = true
 
 	var beam *beamsv1.Beam
-	err = client.RetryWithRelogin(ctx, tc, func() error {
+	err = retryWithRelogin(ctx, tc, func() error {
 		clusterClient, err := tc.ConnectToCluster(ctx)
 		if err != nil {
 			return trace.Wrap(err)
